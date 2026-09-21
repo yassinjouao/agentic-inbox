@@ -1,50 +1,20 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
+
 	"name": "agentic-inbox",
+
 	"compatibility_date": "2025-11-28",
-	"main": "./workers/app.ts",
-	"observability": {
-		"enabled": true
-	},
+
+	"main": "./workers/cleanup.ts",
+
 	"compatibility_flags": [
 		"nodejs_compat"
 	],
-	"vars": {
-		// Production deploys must also define POLICY_AUD and TEAM_DOMAIN.
-		// TEAM_DOMAIN may be the base Access URL or the full /cdn-cgi/access/certs URL.
-		// The worker now fails closed outside local development if Access is not configured.
-		"DOMAINS": "crosspic.com",
-		"EMAIL_ADDRESSES": []
+
+	"observability": {
+		"enabled": true
 	},
-	"send_email": [
-		{
-			"name": "EMAIL",
-			"remote": true
-		}
-	],
-	"r2_buckets": [
-		{
-			"binding": "BUCKET",
-			"bucket_name": "agentic-inbox",
-			"preview_bucket_name": "agentic-inbox"
-		}
-	],
-	"durable_objects": {
-		"bindings": [
-			{
-				"name": "MAILBOX",
-				"class_name": "MailboxDO"
-			},
-			{
-				"name": "EMAIL_AGENT",
-				"class_name": "EmailAgent"
-			},
-			{
-				"name": "EMAIL_MCP",
-				"class_name": "EmailMCP"
-			}
-		]
-	},
+
 	"migrations": [
 		{
 			"tag": "v1",
@@ -61,6 +31,14 @@
 		{
 			"tag": "v3",
 			"new_sqlite_classes": [
+				"EmailMCP"
+			]
+		},
+		{
+			"tag": "v4-delete-agentic-inbox-durable-objects",
+			"deleted_classes": [
+				"MailboxDO",
+				"EmailAgent",
 				"EmailMCP"
 			]
 		}
